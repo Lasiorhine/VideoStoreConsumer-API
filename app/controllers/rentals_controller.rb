@@ -4,7 +4,8 @@ class RentalsController < ApplicationController
 
   # TODO: make sure that wave 2 works all the way
   def check_out
-    rental = Rental.new(movie: @movie, customer: @customer, due_date: params[:due_date])
+    date_due = DateTime.now.advance(days: 10)
+    rental = Rental.new(movie: @movie, customer: @customer, due_date: date_due)
 
     if rental.save
       render status: :ok, json: {}
@@ -58,5 +59,9 @@ private
     unless @customer
       render status: :not_found, json: { errors: { customer_id: ["No such customer #{params[:customer_id]}"] } }
     end
+  end
+
+  def rental_params
+    return params.permit(:customer_id, :title)
   end
 end
